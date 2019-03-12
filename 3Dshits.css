@@ -3,8 +3,8 @@ body{
 	overflow: hidden;
 }
 #area{
-	width: 600px;
-	height: 600px;
+	width: 400px;
+	height: 400px;
 }
 canvas{
 	border: solid;

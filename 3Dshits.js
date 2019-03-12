@@ -7,12 +7,14 @@ let projectionCenterX;
 let projectionCenterY;
 let spawningSpeed;
 let nbDots = 10;
+let objects = [];
 function setupCanvas(){
 	canvas = document.getElementById('scene');
 	width = canvas.offsetWidth;
 	height = canvas.offsetHeight;
 	canvas.addEventListener('click',function(evt){
 		console.log(evt.clientX + ',' + evt.clientY);
+		objects.push(new Cube(+evt.clientX, +evt.clientY,50))
 	},false);
 
 	document.getElementById('perspectiveSlider').oninput = function(){
@@ -43,10 +45,7 @@ function setupCanvas(){
 	}
 	window.addEventListener('resize', onResize);
 	onResize();
-	/*for(let i = 0; i < nbDots; i++){
-		dots.push(new Dot());
-	}*/
-	dots.push(new Cube());
+	objects.push(new Cube(112.5, 112.5, 150));
 
 	gameloop();
 }
@@ -252,9 +251,15 @@ class Obj3D{
 
 
 class Cube extends Obj3D{
-	constructor(){
-		super([[75, 75, 0],[150, 75, 0],[75, 150, 0],[150, 150, 0],[75, 75, 75],[150, 75, 75],[75, 150, 75],[150, 150, 75]],
+	constructor(x, y, size){
+		var x1 = x - size/2, x2 = x1+size;
+		var y1 = y - size/2, y2 = y1+size;
+		var z1 = 0, z2 = z1+size;
+
+		super([[x1, y1, z1],[x2, y1, z1],[x1, y2, z1],[x2, y2, z1],[x1, y1, z2],[x2, y1, z2],[x1, y2, z2],[x2, y2, z2]],
 			[[0, 1], [1, 3], [3, 2], [2, 0], [2, 6], [3, 7], [0, 4], [1, 5], [6, 7], [6, 4], [7, 5], [4, 5]]);
+		//super([[75, 75, 0],[150, 75, 0],[75, 150, 0],[150, 150, 0],[75, 75, 75],[150, 75, 75],[75, 150, 75],[150, 150, 75]],
+
 	}
 }
 
@@ -266,21 +271,22 @@ function gameloop(){
 }
 var t = 0;
 function doShits(){
-	t++;
-	if( spawningSpeed && t % (21 - spawningSpeed) == 0){
-		dots[0].rotate(0.1,0.1,);
+	if(spawningSpeed && t % (21 - spawningSpeed) == 0){
+		for(var i = 0; i < objects.length; ++i){
+			objects[i].rotate(0.1,0.1,0);
+		}
 	}
 }
 
 function applyPhysics(){
-	for(var i = 0; i < dots.length; i++){
-		dots[i].applyPhysics();
+	for(var i = 0; i < objects.length; i++){
+		objects[i].applyPhysics();
 	}
 }
 
 function render(){
 	ctx.clearRect(0,0,width, height);
-	for(var i = 0; i < dots.length; i++){
-		dots[i].Draw();
+	for(var i = 0; i < objects.length; i++){
+		objects[i].Draw();
 	}
 }
